@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0a0f1c" />
+  <title>Orbital Uplink – Secure Satellite Access</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="apple-touch-icon" href="/assets/icon-192.png" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-bar">
+      <div class="logo">
+        <span class="logo-mark">◉</span>
+        <span class="logo-text">ORBITAL UPLINK</span>
+      </div>
+      <div class="user-chip">
+        <span>Brandon</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="view">
+        <div class="card wide">
+          <h1>Welcome, Brandon</h1>
+          <p class="subtitle">Active plan: <strong>GEO Priority</strong> (recommended)</p>
+
+          <div class="plan featured" style="max-width:340px;margin:24px 0;">
+            <div class="plan-badge">Active</div>
+            <h2>GEO Priority</h2>
+            <ul>
+              <li>Up to 500 Mbps</li>
+              <li>Public IP option</li>
+              <li>Full antenna alignment suite</li>
+              <li>Priority gateway routing</li>
+            </ul>
+          </div>
+
+          <div class="dashboard-actions">
+            <a href="/success.html" class="btn-primary" style="display:inline-block;text-align:center;text-decoration:none;max-width:320px;">
+              Launch Alignment Console
+            </a>
+          </div>
+
+          <div class="feature-list" style="margin-top:32px;">
+            <h3 style="font-size:1rem;margin-bottom:12px;color:var(--text-muted);">Console capabilities</h3>
+            <ul style="list-style:none;color:var(--text-muted);font-size:0.95rem;line-height:1.8;">
+              <li>✓ DeviceOrientation-based antenna alignment</li>
+              <li>✓ Hardcoded geostationary target vectors</li>
+              <li>✓ Offline satellite IP registry (CGNAT + public gateway blocks)</li>
+              <li>✓ Fully client-side / serverless</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Orbital Uplink Systems • Demo Environment</span>
+    </footer>
+  </div>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/service-worker.js").catch(console.error);
+    }
+  </script>
+</body>
+</html>
