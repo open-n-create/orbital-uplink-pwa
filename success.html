@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#0a0f1c" />
+  <title>Alignment Console – Orbital Uplink</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-bar">
+      <div class="logo">
+        <span class="logo-mark">◉</span>
+        <span class="logo-text">ORBITAL UPLINK</span>
+      </div>
+      <div class="user-chip">
+        <span>Brandon · GEO Priority</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="view">
+        <div class="card wide">
+          <div id="alignment-console">
+            <h1>Antenna Alignment Console</h1>
+            <p class="subtitle">Physically orient your device to lock onto the target satellite vector</p>
+
+            <div class="target-panel">
+              <div class="target-info">
+                <span class="label">Target Satellite</span>
+                <strong id="target-name">—</strong>
+              </div>
+              <div class="vector-grid">
+                <div>
+                  <span class="label">Target Azimuth</span>
+                  <div id="target-az" class="value">—</div>
+                </div>
+                <div>
+                  <span class="label">Target Elevation</span>
+                  <div id="target-el" class="value">—</div>
+                </div>
+                <div>
+                  <span class="label">Current Azimuth</span>
+                  <div id="current-az" class="value">—</div>
+                </div>
+                <div>
+                  <span class="label">Current Elevation</span>
+                  <div id="current-el" class="value">—</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="alignment-meter">
+              <div class="meter-header">
+                <span>Alignment Error</span>
+                <span id="alignment-error" class="bad">—</span>
+              </div>
+              <div class="progress-track">
+                <div id="lock-progress" class="progress-fill"></div>
+              </div>
+              <div id="lock-status" class="status-seeking">SEEKING</div>
+            </div>
+
+            <button id="btn-start-align" class="btn-primary">
+              Enable Sensors & Begin Alignment
+            </button>
+
+            <p class="hint">
+              Hold your iPhone upright and tilt/rotate until the error falls below 3.5° and the status shows LOCKED.
+              On iOS you will be asked for motion permission.
+            </p>
+          </div>
+
+          <div id="ip-reveal" class="hidden">
+            <h1>Uplink Established</h1>
+            <p class="subtitle">Local satellite infrastructure configuration delivered</p>
+
+            <div class="ip-card">
+              <div class="ip-row">
+                <span>Assigned Address</span>
+                <code id="cfg-ip">—</code>
+              </div>
+              <div class="ip-row">
+                <span>Gateway</span>
+                <code id="cfg-gw">—</code>
+              </div>
+              <div class="ip-row">
+                <span>Netmask</span>
+                <code id="cfg-mask">—</code>
+              </div>
+              <div class="ip-row">
+                <span>DNS</span>
+                <code id="cfg-dns">—</code>
+              </div>
+              <div class="ip-row">
+                <span>Type / ASN</span>
+                <code id="cfg-type">—</code>
+              </div>
+              <div class="ip-row">
+                <span>Organization</span>
+                <code id="cfg-org">—</code>
+              </div>
+              <div class="ip-row">
+                <span>CIDR Block</span>
+                <code id="cfg-cidr">—</code>
+              </div>
+              <div class="ip-row">
+                <span>MTU</span>
+                <code id="cfg-mtu">—</code>
+              </div>
+            </div>
+
+            <p class="disclaimer">
+              This configuration is generated entirely from a local offline registry for demonstration purposes.
+              No actual network interface is modified and no external connection is established.
+            </p>
+
+            <div style="margin-top:24px;">
+              <a href="/index.html" class="btn-ghost" style="display:inline-block;text-decoration:none;padding:10px 18px;">
+                ← Back to Dashboard
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import { startAlignmentEngine, stopAlignmentEngine, onAlignmentLock } from "./js/alignment.js";
+
+    const consoleEl = document.getElementById("alignment-console");
+    const ipReveal = document.getElementById("ip-reveal");
+    const startBtn = document.getElementById("btn-start-align");
+
+    startBtn.addEventListener("click", async () => {
+      startBtn.disabled = true;
+      startBtn.textContent = "Sensors active – orient device…";
+      const ok = await startAlignmentEngine(() => {
+        const cfg = onAlignmentLock();
+        document.getElementById("cfg-ip").textContent = cfg.assignedIp;
+        document.getElementById("cfg-gw").textContent = cfg.gateway;
+        document.getElementById("cfg-mask").textContent = cfg.netmask;
+        document.getElementById("cfg-dns").textContent = cfg.dns.join(" / ");
+        document.getElementById("cfg-type").textContent = `${cfg.type} (${cfg.asn})`;
+        document.getElementById("cfg-org").textContent = cfg.organization;
+        document.getElementById("cfg-cidr").textContent = cfg.cidr;
+        document.getElementById("cfg-mtu").textContent = cfg.mtu;
+
+        consoleEl.classList.add("hidden");
+        ipReveal.classList.remove("hidden");
+        stopAlignmentEngine();
+      });
+      if (!ok) {
+        startBtn.disabled = false;
+        startBtn.textContent = "Enable Sensors & Begin Alignment";
+      }
+    });
+  </script>
+</body>
+</html>
